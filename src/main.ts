@@ -9,7 +9,7 @@ const querySchema = z.object({
   did_i: z.string().uuid(),
   did_w: z.string().transform((val) => parseInt(val, 10)),
   did_h: z.string().transform((val) => parseInt(val, 10)),
-  did_a: z.string(),
+  did_a: z.string().min(1),
   did_d: z.string().optional(),
 });
 
@@ -36,7 +36,6 @@ app.get(
         width="70"
         height="28"
         viewBox="0 0 70 28"
-        fill="none"
         xmlns="http://www.w3.org/2000/svg"
       >
         <a href="https://did.id/" target="_blank">
@@ -73,6 +72,7 @@ app.get(
               />
             </a>`
           : ""}
+        <text x="0" y="15" fill="${color}">${height}X${width}</text>
       </svg>`,
       200,
       { "Content-Type": "image/svg+xml" }
