@@ -1,4 +1,7 @@
 compatibility_date = "2023-05-12"
+kv_namespaces = [
+  {binding = "KV", id = "5383943bb3084db4b598820933570ea6", preview_id = "e614b9c6cbd540dcb413886dce54a92e"},
+]
 main = "src/main.ts"
 name = "did-profile-widget"
 send_metrics = false

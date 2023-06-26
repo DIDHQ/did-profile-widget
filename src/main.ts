@@ -3,6 +3,7 @@ import { html } from "hono/html";
 import { cors } from "hono/cors";
 import { etag } from "hono/etag";
 import { z } from "zod";
+import { KVNamespace } from "@cloudflare/workers-types";
 
 const querySchema = z.object({
   did_i: z.string().uuid(),
@@ -12,17 +13,25 @@ const querySchema = z.object({
   did_d: z.string().optional(),
 });
 
-const app = new Hono({ strict: false });
+const app = new Hono<{
+  Bindings: {
+    KV: KVNamespace;
+  };
+}>({ strict: false });
 
 app.get(
   "/",
   cors({ origin: ["https://d.id", "http://localhost:3000"] }),
   etag(),
   async (c) => {
-    const { did_w: width, did_h: height } = querySchema.parse(c.req.query());
-    const color = "white";
+    const {
+      did_i: id,
+      did_w: width,
+      did_h: height,
+    } = querySchema.parse(c.req.query());
+    const color = (await c.env.KV.get(`color:${id}`, "text")) || "#000000";
 
-    return c.html(
+    return c.text(
       html`<svg
         width="70"
         height="28"
@@ -41,7 +50,7 @@ app.get(
           />
         </a>
         ${width >= height
-          ? html`<a href="/">
+          ? html`<a href="/config">
               <path
                 d="M56.6001 3.30005C55.3001 3.30005 54.4001 4.20005 54.4001 5.50005C54.4001 6.80005 55.3001 7.70005 56.6001 7.70005C57.9001 7.70005 58.8001 6.80005 58.8001 5.50005C58.8001 4.20005 57.9001 3.30005 56.6001 3.30005Z"
                 fill="${color}"
@@ -68,6 +77,41 @@ app.get(
       200,
       { "Content-Type": "image/svg+xml" }
     );
+  }
+);
+
+app.get(
+  "/config",
+  cors({ origin: ["https://d.id", "http://localhost:3000"] }),
+  async (c) => {
+    const { did_i: id } = querySchema.parse(c.req.query());
+    const color = (await c.env.KV.get(`color:${id}`, "text")) || "#FFFFFF";
+
+    return c.html(html`<form action="/save" method="post">
+      <label for="id">ID:</label>
+      <input type="text" id="id" name="id" value="${id}" />
+      <br />
+      <label for="color">Color:</label>
+      <input type="text" id="color" name="color" value="${color}" />
+      <br />
+      <input type="submit" value="Save" />
+    </form>`);
+  }
+);
+
+app.post(
+  "/save",
+  cors({ origin: ["https://d.id", "http://localhost:3000"] }),
+  async (c) => {
+    const form = await c.req.formData();
+    const id = form.get("id");
+    const color = form.get("color");
+
+    if (id && color) {
+      await c.env.KV.put(`color:${id.toString()}`, color.toString());
+    }
+
+    return c.redirect("/config");
   }
 );
 
