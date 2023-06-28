@@ -36,11 +36,34 @@ app.get(
         viewBox="0 0 70 28"
         xmlns="http://www.w3.org/2000/svg"
       >
+        <style>
+          {`
+            a:hover {
+              opacity: 0.5;
+            }
+          `}
+        </style>
+        <text x="0" y="15" fill={color}>
+          {height}X{width}
+        </text>
+        <text x="0" y="25" fill={color}>
+          {did}
+        </text>
         <a href="https://did.id/" target="_blank">
           <path
             d="M12.7002 20C18.2002 20 22.7002 15.5 22.7002 10C22.7002 7.7 22.0002 5.7 20.7002 4C21.9002 3.1 22.7002 1.6 22.7002 0H12.7002C7.2002 0 2.7002 4.5 2.7002 10C2.7002 15.5 7.2002 20 12.7002 20ZM12.7002 4.6C15.7002 4.6 18.1002 7 18.1002 10C18.1002 13 15.7002 15.4 12.7002 15.4C9.7002 15.4 7.3002 13 7.3002 10C7.3002 7 9.7002 4.6 12.7002 4.6Z"
             fill="#00DF9B"
-          />
+          >
+            <animateTransform
+              attributeName="transform"
+              attributeType="XML"
+              type="rotate"
+              from="360 12.5 10"
+              to="0 12.5 10"
+              dur="1s"
+              repeatCount="indefinite"
+            />
+          </path>
           <path
             d="M25.5001 22.7C24.9001 21.2 23.7001 20.1 22.1001 19.6C19.5001 22.1 16.1001 23.4 12.8001 23.4C9.4001 23.4 6.1001 22.1 3.5001 19.6C1.9001 20.1 0.700098 21.2 0.100098 22.7C3.5001 26.2 8.1001 28 12.7001 28C17.3001 28 21.9001 26.2 25.5001 22.7Z"
             fill="#2471FE"
@@ -70,12 +93,6 @@ app.get(
             />
           </a>
         ) : null}
-        <text x="0" y="15" fill={color}>
-          {height}X{width}
-        </text>
-        <text x="0" y="25" fill={color}>
-          {did}
-        </text>
       </svg>,
       200,
       { "Content-Type": "image/svg+xml" }
