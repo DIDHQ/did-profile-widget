@@ -24,14 +24,15 @@ app.get(
     const {
       did_w: width,
       did_h: height,
+      did_d: did,
       did_c: config,
     } = querySchema.parse(c.req.query());
     const color = config.color || "#000000";
 
     return c.text(
       <svg
-        width="70"
-        height="28"
+        width="100%"
+        height="100%"
         viewBox="0 0 70 28"
         xmlns="http://www.w3.org/2000/svg"
       >
@@ -71,6 +72,9 @@ app.get(
         ) : null}
         <text x="0" y="15" fill={color}>
           {height}X{width}
+        </text>
+        <text x="0" y="25" fill={color}>
+          {did}
         </text>
       </svg>,
       200,
