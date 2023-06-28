@@ -8,6 +8,10 @@ const querySchema = z.object({
   did_h: z.string().transform((val) => parseInt(val, 10)),
   did_a: z.string().min(1),
   did_d: z.string().optional(),
+  did_c: z
+    .string()
+    .optional()
+    .transform((val) => (val ? JSON.parse(val) : {})),
 });
 
 const app = new Hono({ strict: false });
@@ -17,8 +21,12 @@ app.get(
   cors({ origin: ["https://d.id", "http://localhost:3000"] }),
   etag(),
   async (c) => {
-    const { did_w: width, did_h: height } = querySchema.parse(c.req.query());
-    const color = "#000000";
+    const {
+      did_w: width,
+      did_h: height,
+      did_c: config,
+    } = querySchema.parse(c.req.query());
+    const color = config.color || "#000000";
 
     return c.text(
       <svg
@@ -75,14 +83,21 @@ app.get(
   "/config",
   cors({ origin: ["https://d.id", "http://localhost:3000"] }),
   async (c) => {
-    const color = "#FFFFFF";
+    const { did_c: config } = querySchema.parse(c.req.query());
+    const color = config.color || "#000000";
 
     return c.html(
-      <form action="/save" method="post">
+      <form>
         <label for="color">Color:</label>
         <input type="text" id="color" name="color" value={color} />
         <br />
-        <input type="submit" value="Save" />
+        <input
+          type="button"
+          value="Save"
+          onClick={`
+            parent.postMessage({color:document.querySelector('#color').value}, "*");
+          `}
+        />
       </form>
     );
   }
