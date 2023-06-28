@@ -6,8 +6,7 @@
   "scripts": {
     "deploy": "wrangler deploy",
     "dev": "wrangler dev",
-    "tail": "wrangler tail",
-    "format": "prettier --write ."
+    "tail": "wrangler tail"
   },
   "author": "",
   "license": "ISC",
