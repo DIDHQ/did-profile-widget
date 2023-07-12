@@ -11,11 +11,11 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "hono": "^3.2.6",
+    "hono": "^3.3.0",
     "zod": "^3.21.4"
   },
   "devDependencies": {
-    "@cloudflare/workers-types": "^4.20230518.0",
-    "wrangler": "^3.1.1"
+    "@cloudflare/workers-types": "^4.20230710.0",
+    "wrangler": "^3.2.0"
   }
 }
